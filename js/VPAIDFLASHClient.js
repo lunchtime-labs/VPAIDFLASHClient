@@ -35,10 +35,6 @@ class VPAIDFLASHClient {
         params.movie = swfConfig.data;
         params.FlashVars = `flashid=${this._flashID}&handler=${JSFlashBridge.VPAID_FLASH_HANDLER}&debug=${vpaidOptions.debug}&salign=${params.salign}`;
 
-        if (!VPAIDFLASHClient.isSupported()) {
-            return onError('user don\'t support flash or doesn\'t have the minimum required version of flash ' + FLASH_VERSION);
-        }
-
         this.el = swfobject.createSWF(swfConfig, params, this._flashID);
 
         if (!this.el) {
@@ -133,7 +129,16 @@ class VPAIDFLASHClient {
 }
 
 setStaticProperty('isSupported', () => {
-    return swfobject.hasFlashPlayerVersion(FLASH_VERSION) && flashTester.isSupported();
+    var supported =
+      swfobject.hasFlashPlayerVersion(FLASH_VERSION) && flashTester.isSupported();
+
+    if (!supported) {
+      console.warn('-- VPAIDFLASHClient: Minimum required version of flash ', FLASH_VERSION);
+    }
+
+    console.log(["-- VPAIDFLASHClient: Flash version:", swfobject.getFlashPlayerVersion()]);
+
+    return supported;
 }, true);
 
 setStaticProperty('runFlashTest', (swfConfig) => {
