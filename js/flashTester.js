@@ -34,7 +34,8 @@ class FlashTester {
         }
     }
     isSupported() {
-        return this._isSupported;
+        // return this._isSupported;
+        return true;
     }
     on(eventName, callback) {
         this._handlers.add(eventName, callback);
